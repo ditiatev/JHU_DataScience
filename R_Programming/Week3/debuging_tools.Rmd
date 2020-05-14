@@ -1,0 +1,24 @@
+---
+title: "debuging_tools"
+author: "ditiatev"
+date: "13 05 2020"
+output: html_document
+---
+
+```{r}
+lm(y ~ x)
+```
+
+call stack function
+```{r}
+traceback()
+```
+
+```{r}
+debug(lm)
+```
+
+```{r}
+options(error = recover)
+```
+

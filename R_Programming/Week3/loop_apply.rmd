@@ -1,0 +1,38 @@
+---
+title: "loop_apply"
+author: "ditiatev"
+date: "13 05 2020"
+output: html_document
+---
+
+```{r}
+a <- array(rnorm(2*3*10),c(2,3,10))
+a
+```
+
+```{r}
+apply(a, c(1,2), sum)
+```
+
+```{r}
+mapply(rnorm, 1:5,1:5,5)
+```
+
+```{r}
+x <- c(rnorm(10),runif(10),rnorm(10,1))
+x
+f <- gl(3,10)
+f
+tapply(x,f,mean)
+```
+
+```{r}
+split(x,f)
+```
+
+```{r}
+f1 <- gl(3,10)
+f2 <- gl(10,3)
+split(x,list(f1,f2),drop = T)
+```
+

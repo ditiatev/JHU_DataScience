@@ -1,0 +1,109 @@
+---
+title: "week2"
+author: "ditiatev"
+date: "12 05 2020"
+output: html_document
+---
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(dplyr)
+library(statsr)
+library(GGally)
+```
+
+```{r}
+pollutantmean <- function(directory, pollutant = "sulfate", id = 1:332) {
+  # get single file
+  get_df <- function(i) {
+      full_name <- paste0(directory,"/",formatC(i, width=3, flag="0"),".csv")
+      df <- read.csv(file = full_name)
+      df
+  }
+  
+  # united files
+  fi <- T
+  for (i in id) {
+    if (fi == T) {
+      df <- get_df(i)
+      fi <- F} else {
+        df <- rbind(df,get_df(i))
+      }
+  }
+  
+  # get mean
+  poll_mean = mean(df[[pollutant]], na.rm = T)
+  
+  poll_mean
+}
+```
+
+```{r}
+df <- pollutantmean(directory = "specdata", pollutant = "nitrate", id = 1:10)
+```
+
+```{r}
+complete <- function(directory, id = 1:332) {
+  # get single file
+  get_df <- function(i) {
+    full_name <- paste0(directory,"/",formatC(i, width=3, flag="0"),".csv")
+    df <- read.csv(file = full_name)
+    df
+  }
+  
+  # united files
+  df_compl <- data.frame(id   = integer(),
+                         nobs = integer())
+  for (i in id) {
+    df_compl[as.character(i),"id"] <- i
+    df <- get_df(i)
+    df_compl[as.character(i), "nobs"] <- length(df[complete.cases(df),"sulfate"])
+  }
+  
+  df_compl
+}
+
+```
+
+```{r}
+complete("specdata", id = 1:72)
+```
+
+```{r}
+corr <- function(directory = "specdata", threshold = 0) {
+  # find suitable cases
+  df_compl <- complete(directory)
+  df_thd <- df_compl %>%
+    filter(nobs > threshold)
+  if (length(df_thd$id) == 0) return(c())
+  df_thd$corr <- NA
+
+  get_df_cc <- function(i) {
+    full_name <- paste0(directory,"/",formatC(i, width=3, flag="0"),".csv")
+    df <- read.csv(file = full_name)
+    df <- df[complete.cases(df),]
+    df
+  }
+
+  for (i in 1:length(df_thd$id)) {
+    id <- df_thd[i,"id"]
+    df_cc <- get_df_cc(id)
+    df_thd[i,"corr"] <- cor(df_cc$sulfate,df_cc$nitrate)
+  }
+  
+  df_thd$corr
+}
+```
+
+```{r}
+corr(threshold = 2000)
+```
+
+```{r}
+cr <- corr("specdata", 2000)                
+n <- length(cr)                
+cr <- corr("specdata", 1000)                
+cr <- sort(cr)
+print(c(n, round(cr, 4)))
+```
+

@@ -22,9 +22,11 @@ summary(cars)
 ## Including Plots
 
 You can also embed plots, for example:
+~~text~~
+[vk.com](vk.com)
+*text*
 
 ```{r pressure, echo=FALSE}
-#
 plot(pressure)
 ```
 
