@@ -1,0 +1,167 @@
+---
+title: "Apply_FinF_Debuging"
+author: "ditiatev"
+date: "18 05 2020"
+output: html_document
+---
+# Apply
+
+```{r}
+a <- array(rnorm(2*3*10),c(2,3,10))
+a
+```
+
+We can slice symmary of matrix. // sapply, lapply.
+
+```{r}
+apply(a, c(1,2), sum)
+```
+
+
+**
+
+```{r}
+mapply(rnorm, 1:5,1:5,5)
+```
+
+Get symmary by some factor.
+
+```{r}
+x <- c(rnorm(10),runif(10),rnorm(10,1))
+f <- gl(3,10)
+tapply(x,f,mean)
+```
+
+Split data by combinations of factors. This functin can be used with apply.
+
+```{r}
+f1 <- gl(3,10)
+f2 <- gl(10,3)
+split(x,list(f1,f2), drop = T)
+```
+
+# Debuging
+
+```{r}
+traceback()
+options(error = recover)
+```
+
+Go into function with here environment.
+
+```{r}
+debug(lm)
+```
+
+```{r}
+lm(y ~ x)
+```
+
+# Function in function
+
+Function can even return outher functions.
+
+```{r}
+makeVector <- function(x = numeric()) {
+  m <- NULL
+  set <- function(y) {
+    x <<- y
+    m <<- NULL
+  }
+  get <- function() x
+  setmean <- function(mean) m <<- mean
+  getmean <- function() m
+  list(set = set, get = get,
+       setmean = setmean,
+       getmean = getmean)
+}
+
+cachemean <- function(x, ...) {
+  m <- x$getmean()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data <- x$get()
+  m <- mean(data, ...)
+  x$setmean(m)
+  m
+}
+```
+
+
+# Practical example
+
+Function return hospitals by rank and state.
+Used tapply with custom function.
+Used timing measurement.
+
+```{r}
+rankall <- function(outcome, num = "best") {
+    ## Read outcome data
+    data <- read.csv("C:/R/0_courses/JHU_DataScience/R_Programming/Week4/outcome-of-care-measures.csv", colClasses = "character")
+    
+    ## Check outcome are valid
+    if (!(outcome %in% c("heart attack", "heart failure", "pneumonia"))) stop(" invalid  outcome")
+    
+    ## Return hospital name in that state with lowest 30-day death
+    colnum <- function(outcome) {
+        n <- if (outcome == "heart attack") {
+            11
+        } else if (outcome == "heart failure") {
+            17
+        } else {
+            23
+        }
+        n
+    }
+    
+    n <- colnum(outcome)
+    data <- data[which(data[,n] != "Not Available"),]
+    data[,n] <- as.numeric(data[,n])
+    data <- data[order(data$State,data[,n],data[,2]),]
+    
+    ## rate
+    rate <- function(x, num)
+    if (num == "best") {
+        x[1]
+        #data[[1,2]]
+    } else if (num == "worst") {
+        #data[[nrow(data),2]]
+        x[length(x)]
+    } else if (num > length(x)) {
+        NaN
+    } else {
+        x[num]
+    }
+   
+    df1 <- tapply(data[,2], data$State, FUN = function(x) rate(x, num))
+    df2 <- tapply(data[,n], data$State, FUN = function(x) rate(x, num))
+    df3 <- tapply(data[,7], data$State, FUN = function(x) rate(x, num))
+    df <- cbind.data.frame(hospital = df1, rank = df2, state = df3)
+    df
+}
+```
+
+Function execution with timing measurement.
+
+```{r}
+Rprof()
+rankall("heart attack", num = 3)
+Rprof(NULL)
+```
+
+
+```{r}
+s <- summaryRprof()
+s
+```
+
+Other way.
+
+```{r}
+system.time(rankall("heart attack", num = 3))
+```
+
+
+
