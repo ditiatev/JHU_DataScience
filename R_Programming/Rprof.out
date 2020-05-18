@@ -1,0 +1,10 @@
+sample.interval=20000
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"scan" "read.table" "read.csv" "rankall" 
+"order" "[.data.frame" "[" "rankall" 

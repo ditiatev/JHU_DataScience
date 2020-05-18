@@ -23,7 +23,3 @@ cachemean <- function(x, ...) {
   x$setmean(m)
   m
 }
-
-v <- rnorm(10000,100,10)
-vv <- makeVector(v)
-m <- cachemean(vv)
