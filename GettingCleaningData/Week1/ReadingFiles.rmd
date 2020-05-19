@@ -1,0 +1,130 @@
+---
+title: "ReadingFiles"
+author: "ditiatev"
+date: "18 05 2020"
+output: html_document
+---
+
+Work with directory
+
+```{r}
+getwd()
+setwd("C:/R/0_courses/JHU_DataScience/GettingCleaningData/Week1")
+```
+
+Cheacking and creating directory
+
+```{r}
+if (!file.exists("data")) {
+    dir.create("data")
+}
+```
+
+# Downloading
+
+Dowloading a file from the web
+
+```{r}
+FileUrl <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD"
+download.file(FileUrl, destfile = "./data/camera.csv")
+list.files("./data")
+```
+
+# XLSX
+
+Reading excel files
+
+```{r}
+#install.packages("xlsx")
+library(xlsx)
+```
+
+We can read a part of file by using col&row Indexes
+
+```{r}
+colIndex <- 2:3
+rowIndex <- 1:4
+cameraData <- read.xlsx("./data/CamerasXLSX.xlsx", sheetIndex = 1, header = T,
+                        rowIndex = rowIndex, colIndex = colIndex)
+head(cameraData)
+```
+
+Writing xlsx
+
+```{r}
+write.xlsx(x = cameraData, file = "./data/setCamerasXLSX.xlsx", row.names = F)
+```
+
+Other option to work with xlsx - XLConnect package
+
+# XML
+https://en.wikipedia.org/wiki/XML
+
+```{r}
+#install.packages("XML")
+library(XML)
+```
+
+```{r}
+FileUrl <- "http://www-db.deis.unibo.it/courses/TW/DOCS/w3schools/xml/simple.xml"
+doc <- xmlTreeParse(FileUrl, 
+                    useInternalNodes = TRUE
+                    )
+rootNote <- xmlRoot(doc)
+xmlName(rootNote)
+```
+
+```{r}
+names(rootNote)
+```
+
+```{r}
+rootNote[[1]]
+```
+
+```{r}
+rootNote[[1]][[1]]
+```
+
+```{r}
+xmlSApply(rootNote,xmlValue)
+```
+
+### XPath
+look more: https://www.stat.berkeley.edu/~statcur/Workshop2/Presentations/XML.pdf
+
+```{r}
+xpathSApply(doc = rootNote,"//name",xmlValue)
+```
+
+
+## JSON
+
+```{r}
+library(jsonlite)
+jsonData <- fromJSON("https://api.github.com/users/ditiatev/repos")
+names(jsonData)
+jsonData$owner$login
+```
+
+```{r}
+myjson <- toJSON(head(iris), pretty = T)
+myjson
+```
+
+```{r}
+fromJSON(myjson)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

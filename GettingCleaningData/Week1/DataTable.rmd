@@ -1,0 +1,106 @@
+---
+title: "DataTable"
+author: "ditiatev"
+date: "18 05 2020"
+output: html_document
+---
+
+*Main purpose because it faster than df*
+
+```{r}
+#install.packages("data.table")
+library(data.table)
+
+df = data.frame(x=rnorm(9),y=rep(c("a","b","c"),each=3),z=rnorm(9))
+df
+```
+# Read csv in dt format
+
+```{r}
+dt_usc <- fread("./data/UScommunities.csv", header = T, sep = ",")
+```
+
+
+```{r}
+dt = data.table(x=rnorm(9),y=rep(c("a","b","c"),each=3),z=rnorm(9))
+dt
+```
+
+All tables in memory
+
+```{r}
+tables()
+```
+
+#Subsetings
+
+```{r}
+dt[2,]
+```
+
+```{r}
+dt[dt$y=="a",]
+```
+
+```{r}
+dt[c(2,3)]
+```
+
+```{r}
+dt[,c(2,3)]
+```
+
+apply functions
+
+```{r}
+dt[,list(mean(x),sum(z))]
+```
+
+```{r}
+dt[,table(y)]
+```
+
+add new colomns
+
+```{r}
+dt[,w:=z^2]
+dt
+```
+
+multiple operations
+
+```{r}
+dt[,m:= {tmp <- (x+z);
+        log2(tmp+5)}]
+dt
+```
+
+.N
+
+```{r}
+set.seed(123)
+dt2 <- data.table(x=sample(c("a","b","c"),1E5,T))
+head(dt2)
+```
+
+```{r}
+dt2[, .N, by=x]
+```
+
+Keys
+
+```{r}
+setkey(dt2,x)
+dt2['a']
+```
+
+Joins
+
+```{r}
+dt1 <- data.table(x=c("a","a","b","dt1"), y=1:4)
+dt2 <- data.table(x=c("a","b","dt2"), y=5:7)
+setkey(dt1,x); setkey(dt2,x)
+merge(dt1,dt2)
+```
+
+
