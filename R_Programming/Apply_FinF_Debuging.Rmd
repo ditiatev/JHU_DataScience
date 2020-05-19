@@ -160,7 +160,7 @@ s
 Other way.
 
 ```{r}
-system.time(rankall("heart attack", num = 3))
+system.time(replicate(10000, rankall("heart attack", num = 3)))
 ```
 
 
