@@ -1,0 +1,109 @@
+---
+title: "MySQL"
+author: "ditiatev"
+date: "20 05 2020"
+output: html_document
+---
+
+```{r}
+#install.packages("RMySQL")
+library(RMySQL)
+```
+
+# GetallDataBases
+
+```{r}
+ucscDb <- dbConnect(MySQL(),
+                    user = "genome",
+                    host = "genome-mysql.cse.ucsc.edu")
+result <- dbGetQuery(ucscDb, "show databases;"); dbDisconnect(ucscDb)
+```
+
+```{r}
+head(result,10)
+```
+
+# GetallTables (for "hg19" db)
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+allTables <- dbListTables(hg19); dbDisconnect(hg19)
+length(allTables)
+```
+
+```{r}
+head(allTables)
+```
+
+# GetAllCollumns (in some Table)
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+dbListFields(hg19,"affyU133Plus2"); dbDisconnect(hg19)
+```
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+dbGetQuery(hg19, "select count(*) from affyU133Plus2"); dbDisconnect(hg19)
+```
+
+get all table
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+affyData <- dbReadTable(hg19, "affyU133Plus2"); dbDisconnect(hg19)
+```
+
+```{r}
+head(affyData)
+```
+
+get set of table
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+query <- dbSendQuery(hg19, "select * from affyU133Plus2 where misMatches between 1 and 3"); 
+affyMis <- fetch(query)
+dbDisconnect(hg19)
+quantile(affyMis$misMatches)
+```
+
+```{r}
+hg19 <- dbConnect(MySQL(),
+                  user = "genome",
+                  db = "hg19",
+                  host = "genome-mysql.cse.ucsc.edu")
+query <- dbSendQuery(hg19, "select * from affyU133Plus2 where misMatches between 1 and 3"); 
+affyMis <- fetch(query,n = 10); dbClearResult(query);
+dbDisconnect(hg19)
+```
+
+```{r}
+dim(affyMis)
+```
+
+
+
+
+
+
+
+
+
+
+
