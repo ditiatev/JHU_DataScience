@@ -56,7 +56,7 @@ hg19 <- dbConnect(MySQL(),
 dbGetQuery(hg19, "select count(*) from affyU133Plus2"); dbDisconnect(hg19)
 ```
 
-get all table
+# GetAllTable
 
 ```{r}
 hg19 <- dbConnect(MySQL(),
@@ -70,7 +70,7 @@ affyData <- dbReadTable(hg19, "affyU133Plus2"); dbDisconnect(hg19)
 head(affyData)
 ```
 
-get set of table
+# GetSetTable
 
 ```{r}
 hg19 <- dbConnect(MySQL(),
