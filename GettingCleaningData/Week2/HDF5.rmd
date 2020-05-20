@@ -1,0 +1,76 @@
+---
+title: "HDF5"
+author: "ditiatev"
+date: "20 05 2020"
+output: html_document
+---
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+#BiocManager::install()
+#BiocManagera::install("rhdf5")
+```
+
+```{r}
+library(rhdf5)
+```
+
+# Create H5
+
+```{r}
+created = h5createFile("example.h5")
+created
+```
+
+```{r}
+created = h5createGroup("example.h5", "foo")
+created = h5createGroup("example.h5", "baa")
+created = h5createGroup("example.h5", "foo/foobaa")
+h5ls("example.h5")
+```
+
+Write to groups
+
+```{r}
+A = matrix(1:10,5,2)
+B = array(seq(0.1,2.0,by=0.1), dim = c(5,2,2))
+attr(B, "scale") <- "liter"
+
+h5write(A,"example.h5","foo/A")
+h5write(B,"example.h5","foo/foobaa/B")
+h5ls("example.h5")
+```
+
+
+```{r}
+df = data.frame(l = 1L:5L, s = seq(0,1,length.out = 5),
+                c = c("ab","cde","fghi","a","s"), stringsAsFactors = F)
+df
+```
+
+```{r}
+h5write(df,"example.h5","df")
+h5ls("example.h5")
+```
+
+# Reading
+
+```{r}
+readA = h5read("example.h5","foo/A")
+readA
+```
+
+# Operate with pieces of file
+
+```{r}
+h5write(c(12,13,14), "example.h5", "foo/A", index = list(1:3,1))
+h5read("example.h5", "foo/A")
+```
+
+```{r}
+h5read("example.h5", "foo/A", index = list(1:3,1))
+```
+
+
+
