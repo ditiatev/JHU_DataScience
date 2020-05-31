@@ -1,0 +1,43 @@
+---
+title: "API"
+author: "ditiatev"
+date: "20 05 2020"
+output: html_document
+---
+
+# GitHub
+
+```{r}
+library(httr)
+oauth_endpoints("github")
+```
+
+```{r}
+myapp <- oauth_app("github",
+  key = "947b8c5b435426c966d4",
+  secret = "308bb97130e3809ee93defbfef12710eb8bff32c"
+)
+```
+
+```{r}
+github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
+```
+
+
+```{r}
+gtoken <- config(token = github_token)
+#req <- GET("https://api.github.com/users/jtleek/repos", gtoken)
+req <- GET("https://api.github.com/repos/jtleek/datasharing", gtoken)
+
+stop_for_status(req)
+x <- content(req)
+```
+
+```{r}
+x$created_at
+```
+
+
+
+
+

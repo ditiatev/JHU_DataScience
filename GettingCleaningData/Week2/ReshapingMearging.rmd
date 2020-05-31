@@ -1,0 +1,105 @@
+---
+title: "ManagingData"
+author: "ditiatev"
+date: "21 05 2020"
+output: html_document
+---
+
+```{r}
+dim(warpbreaks)
+warpbreaks$replicate <- rep(1:9,len=54)
+head(warpbreaks)
+```
+
+```{r}
+xt <- xtabs(breaks ~ .,data = warpbreaks)
+ftable(xt)
+```
+
+
+# Reshaping
+
+```{r}
+library(reshape2)
+head(mtcars)
+```
+
+```{r}
+mtcars$carname <- rownames(mtcars)
+carMelt <- melt(data = mtcars, id.vars = c("carname","gear","cyl"), measure.vars = c("mpg","hp"))
+head(carMelt)
+```
+
+# Casting
+
+```{r}
+cylData <- dcast(carMelt, cyl ~ variable, mean)
+cylData
+```
+
+# Merging data
+
+### Merge
+
+```{r}
+getwd()
+```
+
+```{r}
+if(!file.exists("./data")) {dir.create("./data")}
+fileUrl1 <- "https://raw.githubusercontent.com/jtleek/dataanalysis/master/week2/007summarizingData/data/reviews.csv"
+fileUrl2 <- "https://raw.githubusercontent.com/jtleek/dataanalysis/master/week2/007summarizingData/data/solutions.csv"
+
+download.file(fileUrl1, destfile = "./data/reviews.csv")
+download.file(fileUrl2, destfile = "./data/solution.csv")
+reviews <- read.csv("./data/reviews.csv")
+solution <- read.csv("./data/solution.csv")
+```
+
+```{r}
+head(reviews)
+```
+
+```{r}
+head(solution)
+```
+
+```{r}
+mergedData <- merge(reviews,solution,by.x = "solution_id", by.y = "id", all = TRUE)
+head(mergedData)
+```
+
+
+### Join
+If we have common id
+
+```{r}
+library(plyr)
+df1 <- data.frame(id = sample(1:10), x = rnorm(10))
+df2 <- data.frame(id = sample(1:10), y = rnorm(10))
+df3 <- data.frame(id = sample(1:10), z = rnorm(10))
+dfList = list(df1,df2,df3)
+join_all(dfList, by = "id")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
