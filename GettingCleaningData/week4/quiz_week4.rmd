@@ -1,0 +1,170 @@
+---
+title: "quiz_week4"
+author: "ditiatev"
+date: "02 06 2020"
+output: html_document
+---
+
+# Question_1
+The American Community Survey distributes downloadable data about United States communities. Download the 2006 microdata survey about housing for the state of Idaho using download.file() from here:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv
+
+and load the data into R. The code book, describing the variable names is here:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf
+
+Apply strsplit() to split all the names of the data frame on the characters "wgtp". What is the value of the 123 element of the resulting list?
+
+```{r}
+if (!file.exists("data")) dir.create("data")
+FileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv"
+download.file(FileUrl, destfile = "./data/idahoHousingSurvey.csv")
+CodeBookUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FPUMSDataDict06.pdf"
+download.file(CodeBookUrl, destfile = "./data/CodeBookIHS.pdf", mode="wb")
+df_ihs <- read.csv("./data/idahoHousingSurvey.csv")
+system('open "./data/CodeBookIHS.pdf"')
+```
+
+```{r}
+names(df_ihs)
+```
+
+
+```{r}
+strsplit(names(df_ihs),"wgtp")[[123]]
+```
+
+
+# Question_2
+Load the Gross Domestic Product data for the 190 ranked countries in this data set:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv
+
+Remove the commas from the GDP numbers in millions of dollars and average them. What is the average?
+
+Original data sources:
+
+http://data.worldbank.org/data-catalog/GDP-ranking-table
+
+```{r}
+FileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv"
+download.file(FileUrl, destfile = "./data/grossDomesticProduct.csv")
+df_gdp <- read.csv("./data/grossDomesticProduct.csv", skip = 4)
+```
+
+```{r}
+head(df_gdp)
+```
+
+```{r}
+df_gdp <- df_gdp[1:190,c(1,2,4,5)]
+names(df_gdp) <- c("shortcode","rank","county","gdp")
+head(df_gdp,10)
+```
+
+```{r}
+tail(df_gdp)
+```
+
+```{r}
+df_gdp$gdp <- as.numeric(gsub(",| ","",as.character(df_gdp$gdp)))
+mean(df_gdp$gdp)
+```
+
+# Question_3
+In the data set from Question 2 what is a regular expression that would allow you to count the number of countries whose name begins with "United"? Assume that the variable with the country names in it is named countryNames. How many countries begin with United?
+
+```{r}
+grep("^United",df_gdp$county,value = T)
+```
+
+# Question_4
+Load the Gross Domestic Product data for the 190 ranked countries in this data set:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv
+
+Load the educational data from this data set:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv
+
+Match the data based on the country shortcode. Of the countries for which the end of the fiscal year is available, how many end in June?
+
+Original data sources:
+
+http://data.worldbank.org/data-catalog/GDP-ranking-table
+
+http://data.worldbank.org/data-catalog/ed-stats
+
+```{r}
+FileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv"
+download.file(FileUrl, destfile = "./data/ed-stats.csv")
+df_ed <- read.csv("./data/ed-stats.csv")
+```
+
+```{r}
+head(df_ed)
+tail(df_ed)
+```
+
+```{r}
+df_gdpEd <- merge(df_gdp,df_ed,by.x = "shortcode", by.y = "CountryCode")
+```
+
+```{r}
+head(df_gdpEd)
+tail(df_gdpEd)
+```
+
+```{r}
+names(df_gdpEd)
+```
+
+```{r}
+grep("[Ff]iscal+(.*)+[Jj]une",df_gdpEd$Special.Notes,value = T)
+```
+
+# Question_5
+You can use the quantmod (http://www.quantmod.com/) package to get historical stock prices for publicly traded companies on the NASDAQ and NYSE. Use the following code to download data on Amazon's stock price and get the times the data was sampled.
+
+```{r}
+#install.packages("quantmod")
+library(quantmod)
+amzn = getSymbols("AMZN",auto.assign=FALSE)
+sampleTimes = index(amzn)
+```
+
+```{r}
+head(amzn)
+```
+
+```{r}
+amzn2012 <- amzn["2012"]
+length(amzn2012)/6
+```
+
+```{r}
+length(amzn2012[.indexwday(amzn2012) %in% 1])/6
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

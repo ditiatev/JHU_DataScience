@@ -1,0 +1,141 @@
+---
+title: "Work with text"
+author: "ditiatev"
+date: "31 05 2020"
+output: html_document
+---
+
+# Data
+
+```{r}
+if (!file.exists("data")) {dir.create("data")}
+FileUrl <- "https://data.baltimorecity.gov/api/views/dz54-2aru/rows.csv?accessType=DOWNLOAD"
+fileUrl1 <- "https://raw.githubusercontent.com/jtleek/dataanalysis/master/week2/007summarizingData/data/reviews.csv"
+fileUrl2 <- "https://raw.githubusercontent.com/jtleek/dataanalysis/master/week2/007summarizingData/data/solutions.csv"
+download.file(FileUrl, destfile = "./data/camera.csv")
+download.file(fileUrl1, destfile = "./data/reviews.csv")
+download.file(fileUrl2, destfile = "./data/solution.csv")
+cameraData <- read.csv("./data/camera.csv")
+reviews <- read.csv("./data/reviews.csv")
+solution <- read.csv("./data/solution.csv")
+```
+
+
+# LowerCase
+- tolower()
+
+### tolower()
+- make all character in lowercase
+```{r}
+names(cameraData)
+```
+
+```{r}
+tolower(names(cameraData))
+```
+
+# Spliting
+- strsplit()
+
+### strsplit()
+- split string by character
+```{r}
+splitNames <- strsplit(names(cameraData),"\\.")
+splitNames[[7]]
+```
+
+
+# Replacing character
+- sub(), gsub()
+```{r}
+testName <- "this_is_a_test"
+```
+
+### sub() 
+- replaced one (first) character on another
+```{r}
+sub("_","",testName)
+```
+
+### gsub()
+- replaced one (all) character on another
+```{r}
+gsub("_","",testName)
+```
+
+
+# Finding values 
+- grep(), grepl()
+
+```{r}
+head(cameraData$intersection)
+```
+
+### grep()
+- finding index with text which including interesting word
+```{r}
+grep("Alameda", cameraData$intersection)
+```
+
+- return values
+```{r}
+grep("Alameda", cameraData$intersection, value = T)
+```
+
+
+### grepl()
+- return True or False
+```{r}
+table(
+    grepl("Alameda", cameraData$intersection)
+    )
+```
+
+- we can make subset
+```{r}
+cameraData[grep("Alameda", cameraData$intersection),]
+```
+
+## library_STRINGR
+
+```{r}
+library(stringr)
+```
+
+### nchar()
+- return numbers of strings
+```{r}
+nchar("Ditiatev Iurii")
+```
+
+### substr()
+- return substring by position
+```{r}
+substr("Ditiatev Iurii",2,7)
+```
+
+### str_trim()
+- delete extra spaces at begining/end of string
+```{r}
+str_trim("Ditiatev     ")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

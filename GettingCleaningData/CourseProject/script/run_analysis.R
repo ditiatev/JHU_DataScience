@@ -134,10 +134,6 @@ rm(df_actlabels)
 
 # We already got a result on the step N1
 
-# Save result data set into csv file
-if (!file.exists("output")) dir.create("output")
-write.csv(df_all_ms,"./output/smartphone_human_act.csv")
-
 #####################################################################################################
 #### 5. From the data set in step 4, creates a second, independent tidy data set ####################
 ####    with the average of each variable for each activity and each subject. #######################
@@ -155,8 +151,8 @@ df_all_means <- df_all_means %>%
     summarise(mean_value = mean(value))
 
 # Save result data set into csv file
-write.table(df_all_means,"./data/smartphone_human_act_means.txt", row.names = F)
+if (!file.exists("output")) dir.create("output")
+write.table(df_all_means,"./output/smartphone_human_act_means.txt", row.names = F)
 
 ## delete primary data
 rm(id_vars); rm(measure_vars)
-

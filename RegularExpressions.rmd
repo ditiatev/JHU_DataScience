@@ -1,0 +1,21 @@
+---
+title: "RegularExpressions"
+author: "ditiatev"
+date: "31 05 2020"
+output: html_document
+---
+
+^i think - start of a line
+i think - end of a line
+[Bb][Uu][Ss][Hh]
+^[Ii] am
+^[0-9][a-zA-Z]
+[^?.]$ - not ? or . at the end of a line
+9.11 - "." - any letter
+flood|fire - or
+^[Gg]ood|[Bb]ad
+^([Gg]ood|[Bb]ad)
+[Gg]eorge( [Ww]\. )? [Bb]ush - ? - optional
+[0-9]+ (.*)[0-9]+
+[Bb]ush( +[^ ]+ +){1,5} debate
+ +([a-zA-Z]+) +\1 + - "\1" - exact same combination
